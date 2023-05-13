@@ -22,7 +22,7 @@ use Fluent\Fluent;
  * @method self advanced()
  * @method self cash(float $cash)
  */
-final class User
+class User
 {
     use Fluent;
 
@@ -64,7 +64,7 @@ final class User
     /**
      * Age.
      */
-    private ?int $age = null; // @phpstan-ignore-line
+    private ?int $age = null;
 
     /**
      * Status.
@@ -94,7 +94,7 @@ final class User
      * Balance
      */
     #[FluentProperty('cash')]
-    private ?float $balance = 0.0;
+    private ?float $balance = 0.0; // @phpstan-ignore-line
 
     /**
      * Defines the first name.

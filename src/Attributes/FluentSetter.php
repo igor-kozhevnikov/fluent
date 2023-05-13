@@ -17,14 +17,12 @@ class FluentSetter
     /**
      * Arguments.
      *
-     * @var array<string, mixed>
+     * @var array<array-key, mixed>
      */
     private array $arguments;
 
     /**
      * Constructor.
-     *
-     * @param array<string, mixed> $arguments
      */
     public function __construct(string $name, mixed ...$arguments)
     {
@@ -51,7 +49,7 @@ class FluentSetter
     /**
      * Returns arguments.
      *
-     * @return array<string, mixed>
+     * @return array<array-key, mixed>
      */
     public function getArguments(): array
     {

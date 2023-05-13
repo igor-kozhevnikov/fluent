@@ -8,7 +8,9 @@ use Fluent\Exceptions\ExistingMethodException;
 use Fluent\Exceptions\MissingMethodException;
 use Fluent\Exceptions\NonPublicMethodException;
 use Fluent\Exceptions\NonPublicPropertyException;
+use Fluent\Handlers\HandlerInterface;
 use Fluent\Handlers\PropertyHandler;
+use Fluent\Handlers\SetterExtensionHandler;
 use Fluent\Handlers\SetterHandler;
 
 trait Fluent
@@ -29,17 +31,22 @@ trait Fluent
             throw new ExistingMethodException($name);
         }
 
-        $isFind = (new SetterHandler($this, $name, $arguments))->handle();
+        $handlers = [
+            SetterHandler::class,
+            SetterExtensionHandler::class,
+            PropertyHandler::class,
+        ];
 
-        if (false === $isFind) {
-            $isFind = (new PropertyHandler($this, $name, $arguments))->handle();
+        /** @var class-string|HandlerInterface $handler */
+        foreach ($handlers as $handler) {
+            $handler = new $handler($this, $name, $arguments);
+
+            if ($handler->handle()) {
+                return $this;
+            }
         }
 
-        if (false === $isFind) {
-            throw new MissingMethodException($name);
-        }
-
-        return $this;
+        throw new MissingMethodException($name);
     }
 
     /**

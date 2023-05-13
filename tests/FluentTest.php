@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests;
 
+use Fluent\Examples\Client;
 use Fluent\Examples\User;
 use Fluent\Exceptions\ExistingMethodException;
 use Fluent\Exceptions\MissingMethodException;
@@ -11,6 +12,7 @@ use Fluent\Exceptions\NonPublicMethodException;
 use Fluent\Exceptions\NonPublicPropertyException;
 use Fluent\Fluent;
 use Fluent\Handlers\PropertyHandler;
+use Fluent\Handlers\SetterExtensionHandler;
 use Fluent\Handlers\SetterHandler;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
@@ -19,6 +21,7 @@ use PHPUnit\Framework\TestCase;
 
 #[CoversClass(Fluent::class)]
 #[CoversClass(SetterHandler::class)]
+#[CoversClass(SetterExtensionHandler::class)]
 #[CoversClass(PropertyHandler::class)]
 #[CoversClass(ExistingMethodException::class)]
 #[CoversClass(MissingMethodException::class)]
@@ -83,6 +86,23 @@ final class FluentTest extends TestCase
     }
 
     #[Test]
+    #[TestDox('Defining the VIP status')]
+    public function statusVip(): void
+    {
+        $this->assertInstanceOf(Client::class, (new Client())->vip());
+        $this->assertSame(Client::STATUS_VIP, (new Client())->vip()->getStatus());
+    }
+
+    #[Test]
+    #[TestDox('Defining other statuses')]
+    public function statusExtensions(): void
+    {
+        $this->assertSame(Client::STATUS_VIP, (new Client())->status(Client::STATUS_VIP)->getStatus());
+        $this->assertSame(User::STATUS_ACTIVE, (new Client())->active()->getStatus());
+        $this->assertSame(User::STATUS_BLOCKED, (new Client())->blocked()->getStatus());
+    }
+
+    #[Test]
     #[TestDox('Defining the language')]
     public function language(): void
     {
@@ -137,12 +157,30 @@ final class FluentTest extends TestCase
     }
 
     #[Test]
+    #[TestDox('Throwing an exception when a fluent setter is missing (extension)')]
+    public function missingFluentMethodFromExtension(): void
+    {
+        $this->expectException(MissingMethodException::class);
+
+        (new Client())->someMissingMethod(); // @phpstan-ignore-line
+    }
+
+    #[Test]
     #[TestDox('Throwing an exception when a setter is not public')]
     public function nonPublicMethod(): void
     {
         $this->expectException(NonPublicMethodException::class);
 
         (new User())->age(34);
+    }
+
+    #[Test]
+    #[TestDox('Throwing an exception when a setter is not public (extension)')]
+    public function nonPublicMethodFromExtension(): void
+    {
+        $this->expectException(NonPublicMethodException::class);
+
+        (new Client())->hundred();
     }
 
     #[Test]

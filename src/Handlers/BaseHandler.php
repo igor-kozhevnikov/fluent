@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Fluent\Handlers;
 
-abstract class BaseHandler
+abstract class BaseHandler implements HandlerInterface
 {
     /**
      * Context.
@@ -18,11 +18,15 @@ abstract class BaseHandler
 
     /**
      * Arguments.
+     *
+     * @var array<array-key, mixed>
      */
     protected array $arguments = [];
 
     /**
      * Constructor.
+     *
+     * @param array<array-key, mixed> $arguments
      */
     public function __construct(object $context, string $name, array $arguments)
     {

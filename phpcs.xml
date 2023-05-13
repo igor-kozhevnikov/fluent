@@ -2,7 +2,6 @@
 <ruleset name="cross">
     <!-- Directories to verification -->
     <file>src</file>
-    <file>tests</file>
 
     <!-- Exception folder patterns -->
     <exclude-pattern>*/vendor/*</exclude-pattern>

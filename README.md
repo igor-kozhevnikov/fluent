@@ -14,7 +14,7 @@ composer required igor-kozhevnikov/fluent
 
 ## Examples
 
-You can see an [example](https://github.com/igor-kozhevnikov/fluent/blob/1.x/src/Examples/User.php) of the User class.
+You can see [examples](https://github.com/igor-kozhevnikov/fluent/blob/1.x/src/Examples) of classes.
 
 ### Fluent method
 
