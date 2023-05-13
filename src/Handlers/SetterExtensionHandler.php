@@ -20,15 +20,11 @@ class SetterExtensionHandler extends BaseHandler
         $reflection = new ReflectionClass($this->context);
         $attributes = $reflection->getAttributes(FluentSetterExtension::class);
 
-//        if (empty($attributes) && $parent = $reflection->getParentClass()) {
-//            $attributes = $parent->getAttributes(FluentSetterExtension::class);
-//        }
+        if (empty($attributes) && $parent = $reflection->getParentClass()) {
+            $attributes = $parent->getAttributes(FluentSetterExtension::class);
+        }
 
         if (empty($attributes)) {
-            if ($parent = $reflection->getParentClass()) {
-                return (new self($parent, $this->name, $this->arguments))->handle();
-            }
-
             return false;
         }
 
