@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<ruleset name="cross">
+    <!-- Directories to verification -->
+    <file>src</file>
+    <file>tests</file>
+
+    <!-- Exception folder patterns -->
+    <exclude-pattern>*/vendor/*</exclude-pattern>
+
+    <!-- Initialize -->
+    <ini name="memory_limit" value="256M" />
+
+    <!-- Configure -->
+    <config name="testVersion" value="8.1"/>
+
+    <!-- Arguments -->
+    <arg name="colors" />
+    <arg value="p" />
+
+    <!-- Rules -->
+    <rule ref="PSR12" />
+</ruleset>

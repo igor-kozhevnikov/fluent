@@ -1,0 +1,38 @@
+{
+    "name": "igor-kozhevnikov/fluent",
+    "description": "Easy way to add \"Fluent interface\" to a class",
+    "keywords": ["fluent", "fluent interface"],
+    "homepage": "https://github.com/igor-kozhevnikov/fluent",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Igor Kozhevnikov",
+            "email": "igor.kozhevkov@proton.me"
+        }
+    ],
+    "require": {
+        "php": "^8.0",
+    },
+    "require-dev": {
+        "phpstan/phpstan": "^1.10",
+        "squizlabs/php_codesniffer": "^3.7",
+        "phpunit/phpunit": "^10.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Fluent\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "phpcs": "vendor/bin/phpcs -p --standard=phpcs.xml",
+        "phpstan": "vendor/bin/phpstan analyse -c phpstan.neon",
+        "phpunit": "vendor/bin/phpunit"
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
