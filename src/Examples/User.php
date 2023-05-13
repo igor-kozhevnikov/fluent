@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Fluent\Examples;
 
-use Fluent\Attributes\FluentProperty;
 use Fluent\Attributes\FluentSetter;
 use Fluent\Fluent;
 
@@ -15,7 +14,10 @@ use Fluent\Fluent;
  * @method self status(int $status, ?string $message = null, ?int $code = null)
  * @method self active()
  * @method self blocked(?string $message = null, ?int $code = null)
- * @method self balance(float $balance)
+ * @method self language(int $level)
+ * @method self beginner()
+ * @method self intermediate()
+ * @method self advanced()
  */
 final class User
 {
@@ -67,10 +69,9 @@ final class User
     private ?int $statusMessageCode = null;
 
     /**
-     * Balance.
+     * Language level.
      */
-    #[FluentProperty]
-    private float $balance = 0.0;
+    private ?int $language = null;
 
     /**
      * Defines the first name.
@@ -161,6 +162,22 @@ final class User
     }
 
     /**
+     * Defines the language level.
+     */
+    public function setLanguageLevel(int $level): void
+    {
+        $this->language = $level;
+    }
+
+    /**
+     * Returns the language level.
+     */
+    public function getLanguageLevel(): ?int
+    {
+        return $this->language;
+    }
+
+    /**
      * Reset data.
      */
     protected function reset(): void
@@ -171,6 +188,6 @@ final class User
         $this->status = self::STATUS_INACTIVE;
         $this->statusMessage = null;
         $this->statusMessageCode = null;
-        $this->balance = 0.0;
+        $this->language = null;
     }
 }

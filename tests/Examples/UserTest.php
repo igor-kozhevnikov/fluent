@@ -82,6 +82,18 @@ final class UserTest extends TestCase
     }
 
     #[Test]
+    #[TestDox('Defining the language level')]
+    public function language(): void
+    {
+        $value = 100;
+
+        $user = new User();
+        $user->setLanguageLevel($value);
+
+        $this->assertSame($value, $user->getLanguageLevel());
+    }
+
+    #[Test]
     #[TestDox('Resetting all data')]
     public function reset(): void
     {
@@ -89,6 +101,7 @@ final class UserTest extends TestCase
         $user->setFirstName('Igor');
         $user->setLastName('Kozhevnikov');
         $user->setStatus(User::STATUS_ACTIVE, 'Working', 100);
+        $user->setLanguageLevel(10);
 
         $reflection = new ReflectionClass($user);
 
@@ -106,5 +119,6 @@ final class UserTest extends TestCase
         $this->assertSame(User::STATUS_INACTIVE, $user->getStatus());
         $this->assertNull($user->getStatusMessage());
         $this->assertNull($user->getStatusMessageCode());
+        $this->assertNull($user->getLanguageLevel());
     }
 }

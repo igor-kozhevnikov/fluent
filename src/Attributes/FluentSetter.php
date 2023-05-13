@@ -10,14 +10,9 @@ use Attribute;
 class FluentSetter
 {
     /**
-     * Fluent name.
+     * Name.
      */
-    private string $fluentName;
-
-    /**
-     * Setter name.
-     */
-    private string $setterName;
+    private string $name;
 
     /**
      * Arguments.
@@ -33,40 +28,24 @@ class FluentSetter
      */
     public function __construct(string $name, mixed ...$arguments)
     {
-        $this->fluentName = $name;
+        $this->name = $name;
         $this->arguments = $arguments;
     }
 
     /**
-     * Returns a fluent name.
+     * Returns a name.
      */
-    public function getFluentName(): string
+    public function getName(): string
     {
-        return $this->fluentName;
+        return $this->name;
     }
 
     /**
-     * Defines a setter name.
-     */
-    public function setSetterName(string $name): void
-    {
-        $this->setterName = $name;
-    }
-
-    /**
-     * Returns a setter name.
-     */
-    public function getSetterName(): string
-    {
-        return $this->setterName;
-    }
-
-    /**
-     * Returns true if the current setter name is not equal a given setter name.
+     * Returns true if the fluent name is not equal a setter name.
      */
     public function isNotEqual(string $name): bool
     {
-        return $this->fluentName !== $name;
+        return $this->name !== $name;
     }
 
     /**
