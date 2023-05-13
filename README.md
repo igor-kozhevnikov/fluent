@@ -6,13 +6,6 @@
 
 Easy way to add "Fluent interface" to a class.
 
-```php
-$user = User::make()
-    ->fistName('Igor')
-    ->lastName('Kozhevnikov')
-    ->level(User::LANGUAGE_INTERMEDIATE);
-```
-
 ## Install
 
 ```shell
@@ -20,6 +13,8 @@ composer required igor-kozhevnikov/fluent
 ```
 
 ## Examples
+
+You can see an [example](https://github.com/igor-kozhevnikov/fluent/blob/1.x/src/Examples/User.php) of the User class.
 
 ### Fluent method
 
