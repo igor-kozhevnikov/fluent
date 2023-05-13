@@ -11,10 +11,28 @@ use Fluent\Fluent;
  * @method self firstName(string $firstName)
  * @method self lastName(string $lastName)
  * @method self age(int $age)
+ * @method self status(int $status, ?string $message = null, ?int $code = null)
+ * @method self active()
+ * @method self blocked(?string $message = null, ?int $code = null)
  */
-class User
+final class User
 {
     use Fluent;
+
+    /**
+     * User is inactive.
+     */
+    public const STATUS_INACTIVE = 0;
+
+    /**
+     * User is active.
+     */
+    public const STATUS_ACTIVE = 1;
+
+    /**
+     * User is blocked.
+     */
+    public const STATUS_BLOCKED = 2;
 
     /**
      * First name.
@@ -30,6 +48,21 @@ class User
      * Age.
      */
     private ?int $age = null; // @phpstan-ignore-line
+
+    /**
+     * Status.
+     */
+    private int $status = self::STATUS_INACTIVE;
+
+    /**
+     * Status message.
+     */
+    private ?string $statusMessage = null;
+
+    /**
+     * Status message code.
+     */
+    private ?int $statusMessageCode = null;
 
     /**
      * Defines the first name.
@@ -75,6 +108,43 @@ class User
     }
 
     /**
+     * Defines a status.
+     */
+    #[FluentSetter('status')]
+    #[FluentSetter('active', self::STATUS_ACTIVE)]
+    #[FluentSetter('blocked', self::STATUS_BLOCKED)]
+    public function setStatus(int $status, ?string $message = null, ?int $code = null): void
+    {
+        $this->status = $status;
+        $this->statusMessage = $message;
+        $this->statusMessageCode = $code;
+    }
+
+    /**
+     * Returns the status.
+     */
+    public function getStatus(): int
+    {
+        return $this->status;
+    }
+
+    /**
+     * Returns the status message.
+     */
+    public function getStatusMessage(): ?string
+    {
+        return $this->statusMessage;
+    }
+
+    /**
+     * Returns the status message.
+     */
+    public function getStatusMessageCode(): ?int
+    {
+        return $this->statusMessageCode;
+    }
+
+    /**
      * Reset data.
      */
     protected function reset(): void
@@ -82,5 +152,8 @@ class User
         $this->firstName = null;
         $this->lastName = null;
         $this->age = null;
+        $this->status = self::STATUS_INACTIVE;
+        $this->statusMessage = null;
+        $this->statusMessageCode = null;
     }
 }

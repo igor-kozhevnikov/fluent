@@ -19,23 +19,39 @@ final class FluentSetterTest extends TestCase
     public function naming(): void
     {
         $age = 'age';
-        $attribute = new FluentSetter($age);
+        $setter = new FluentSetter($age);
 
-        $reflection = new ReflectionClass($attribute);
+        $reflection = new ReflectionClass($setter);
         $property = $reflection->getProperty('name');
 
-        $this->assertSame($age, $property->getValue($attribute));
-        $this->assertFalse($attribute->isNotEqual($age));
-        $this->assertTrue($attribute->isNotEqual('bla-bla'));
+        $this->assertSame($age, $property->getValue($setter));
+        $this->assertFalse($setter->isNotEqual($age));
+        $this->assertTrue($setter->isNotEqual('bla-bla'));
     }
 
     #[Test]
     #[TestDox('Check if the name is equal the given data')]
     public function equal(): void
     {
-        $attribute = new FluentSetter('time');
+        $setter = new FluentSetter('time');
 
-        $this->assertFalse($attribute->isNotEqual('time'));
-        $this->assertTrue($attribute->isNotEqual('bla-bla'));
+        $this->assertFalse($setter->isNotEqual('time'));
+        $this->assertTrue($setter->isNotEqual('bla-bla'));
+    }
+
+    #[Test]
+    #[TestDox('Merging arguments')]
+    public function arguments(): void
+    {
+        $first = [true, 200, 'truth', [1, 2, 3]];
+        $second = [false, 0, 'falsy', []];
+
+        $setter = new FluentSetter('state', ...$first);
+
+        $reflection = new ReflectionClass($setter);
+        $arguments = $reflection->getProperty('arguments')->getValue($setter);
+
+        $this->assertSame($first, $arguments);
+        $this->assertSame([...$first, ...$second], $setter->mergeArguments($second));
     }
 }

@@ -15,11 +15,21 @@ class FluentSetter
     private string $name;
 
     /**
-     * Constructor.
+     * Arguments.
+     *
+     * @var array<string, mixed>
      */
-    public function __construct(string $name)
+    private array $arguments;
+
+    /**
+     * Constructor.
+     *
+     * @param array<string, mixed> $arguments
+     */
+    public function __construct(string $name, mixed ...$arguments)
     {
         $this->name = $name;
+        $this->arguments = $arguments;
     }
 
     /**
@@ -28,5 +38,17 @@ class FluentSetter
     public function isNotEqual(string $name): bool
     {
         return $this->name !== $name;
+    }
+
+    /**
+     * Merges and returns arguments.
+     *
+     * @param array<string, mixed> $arguments
+     *
+     * @return array<string, mixed>
+     */
+    public function mergeArguments(array $arguments): array
+    {
+        return [...$this->arguments, ...$arguments];
     }
 }

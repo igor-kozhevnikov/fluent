@@ -57,12 +57,39 @@ final class UserTest extends TestCase
     }
 
     #[Test]
+    #[TestDox('Checking a default status')]
+    public function statusDefault(): void
+    {
+        $user = new User();
+
+        $this->assertSame(User::STATUS_INACTIVE, $user->getStatus());
+        $this->assertNull($user->getStatusMessage());
+    }
+
+    #[Test]
+    #[TestDox('Defining a status')]
+    public function testStatus(): void
+    {
+        $status = User::STATUS_BLOCKED;
+        $message = 'Bad guy';
+        $code = 100;
+
+        $user = new User();
+        $user->setStatus($status, $message, $code);
+
+        $this->assertSame($status, $user->getStatus());
+        $this->assertSame($message, $user->getStatusMessage());
+        $this->assertSame($code, $user->getStatusMessageCode());
+    }
+
+    #[Test]
     #[TestDox('Resetting all data')]
     public function reset(): void
     {
         $user = new User();
         $user->setFirstName('Igor');
         $user->setLastName('Kozhevnikov');
+        $user->setStatus(User::STATUS_ACTIVE, 'Working', 100);
 
         $reflection = new ReflectionClass($user);
 
@@ -77,5 +104,8 @@ final class UserTest extends TestCase
         $this->assertNull($user->getFirstName());
         $this->assertNull($user->getLastName());
         $this->assertNull($age->getValue($user));
+        $this->assertSame(User::STATUS_INACTIVE, $user->getStatus());
+        $this->assertNull($user->getStatusMessage());
+        $this->assertNull($user->getStatusMessageCode());
     }
 }

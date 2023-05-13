@@ -46,11 +46,12 @@ trait Fluent
                     continue;
                 }
 
-                $setterName = $method->getName();
-
                 if (! $method->isPublic()) {
-                    throw new NonPublicSetterException($setterName);
+                    throw new NonPublicSetterException($method->getName());
                 }
+
+                $setterName = $method->getName();
+                $arguments = $fluentSetter->mergeArguments($arguments);
 
                 break 2;
             }
