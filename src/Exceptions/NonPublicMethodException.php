@@ -6,13 +6,13 @@ namespace Fluent\Exceptions;
 
 use Exception;
 
-class MissingFluentSetterException extends Exception
+class NonPublicMethodException extends Exception
 {
     /**
      * Constructor.
      */
     public function __construct(string $name)
     {
-        parent::__construct("Fluent setter $name() is missing");
+        parent::__construct("Method $name() must be public");
     }
 }

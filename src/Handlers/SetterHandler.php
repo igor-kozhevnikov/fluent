@@ -5,8 +5,7 @@ declare(strict_types=1);
 namespace Fluent\Handlers;
 
 use Fluent\Attributes\FluentSetter;
-use Fluent\Exceptions\MissingFluentSetterException;
-use Fluent\Exceptions\NonPublicSetterException;
+use Fluent\Exceptions\NonPublicMethodException;
 use ReflectionClass;
 
 class SetterHandler extends BaseHandler
@@ -14,10 +13,9 @@ class SetterHandler extends BaseHandler
     /**
      * @inheritDoc
      *
-     * @throws MissingFluentSetterException
-     * @throws NonPublicSetterException
+     * @throws NonPublicMethodException
      */
-    public function handle(): void
+    public function handle(): bool
     {
         $reflection = new ReflectionClass($this->context);
 
@@ -39,17 +37,15 @@ class SetterHandler extends BaseHandler
                 $setter = $method->getName();
 
                 if (! $method->isPublic()) {
-                    throw new NonPublicSetterException($setter);
+                    throw new NonPublicMethodException($setter);
                 }
 
-                $arguments = [...$fluent->getArguments(), ...$this->arguments];
+                $this->context->$setter(...$fluent->getArguments(), ...$this->arguments);
 
-                $this->context->$setter(...$arguments);
-
-                return;
+                return true;
             }
         }
 
-        throw new MissingFluentSetterException($this->name);
+        return false;
     }
 }

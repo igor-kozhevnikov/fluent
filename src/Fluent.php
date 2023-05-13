@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace Fluent;
 
 use Fluent\Exceptions\ExistingMethodException;
-use Fluent\Exceptions\MissingFluentSetterException;
-use Fluent\Exceptions\NonPublicSetterException;
+use Fluent\Exceptions\MissingMethodException;
+use Fluent\Exceptions\NonPublicMethodException;
+use Fluent\Exceptions\NonPublicPropertyException;
+use Fluent\Handlers\PropertyHandler;
 use Fluent\Handlers\SetterHandler;
 
 trait Fluent
@@ -17,8 +19,9 @@ trait Fluent
      * @param array<array-key, mixed> $arguments
      *
      * @throws ExistingMethodException
-     * @throws MissingFluentSetterException
-     * @throws NonPublicSetterException
+     * @throws MissingMethodException
+     * @throws NonPublicMethodException
+     * @throws NonPublicPropertyException
      */
     protected function fluent(string $name, array $arguments): self
     {
@@ -26,7 +29,15 @@ trait Fluent
             throw new ExistingMethodException($name);
         }
 
-        (new SetterHandler($this, $name, $arguments))->handle();
+        $isFind = (new SetterHandler($this, $name, $arguments))->handle();
+
+        if (false === $isFind) {
+            $isFind = (new PropertyHandler($this, $name, $arguments))->handle();
+        }
+
+        if (false === $isFind) {
+            throw new MissingMethodException($name);
+        }
 
         return $this;
     }
@@ -37,8 +48,9 @@ trait Fluent
      * @param array<array-key, mixed> $arguments
      *
      * @throws ExistingMethodException
-     * @throws MissingFluentSetterException
-     * @throws NonPublicSetterException
+     * @throws MissingMethodException
+     * @throws NonPublicMethodException
+     * @throws NonPublicPropertyException
      */
     public function __call(string $name, array $arguments): self
     {

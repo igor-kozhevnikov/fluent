@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Fluent\Handlers;
 
-abstract class BaseHandler implements HandlerInterface
+abstract class BaseHandler
 {
     /**
      * Context.
@@ -30,4 +30,11 @@ abstract class BaseHandler implements HandlerInterface
         $this->name = $name;
         $this->arguments = $arguments;
     }
+
+    /**
+     * Handle.
+     *
+     * Returns true if process finished successfully.
+     */
+    abstract public function handle(): bool;
 }

@@ -6,74 +6,116 @@ namespace Tests;
 
 use Fluent\Examples\User;
 use Fluent\Exceptions\ExistingMethodException;
-use Fluent\Exceptions\MissingFluentSetterException;
-use Fluent\Exceptions\NonPublicSetterException;
+use Fluent\Exceptions\MissingMethodException;
+use Fluent\Exceptions\NonPublicMethodException;
+use Fluent\Exceptions\NonPublicPropertyException;
 use Fluent\Fluent;
+use Fluent\Handlers\PropertyHandler;
+use Fluent\Handlers\SetterHandler;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
 
 #[CoversClass(Fluent::class)]
+#[CoversClass(SetterHandler::class)]
+#[CoversClass(PropertyHandler::class)]
 #[CoversClass(ExistingMethodException::class)]
-#[CoversClass(MissingFluentSetterException::class)]
-#[CoversClass(NonPublicSetterException::class)]
+#[CoversClass(MissingMethodException::class)]
+#[CoversClass(NonPublicMethodException::class)]
+#[CoversClass(NonPublicPropertyException::class)]
 final class FluentTest extends TestCase
 {
     #[Test]
-    #[TestDox('Returning an instance of a class')]
-    public function returnClassInstance(): void
-    {
-        $this->assertInstanceOf(User::class, (new User())->firstName('Igor'));
-        $this->assertInstanceOf(User::class, (new User())->lastName('Kozhevnikov'));
-        $this->assertInstanceOf(User::class, (new User())->status(User::STATUS_ACTIVE));
-        $this->assertInstanceOf(User::class, (new User())->active());
-        $this->assertInstanceOf(User::class, (new User())->blocked());
-    }
-
-    #[Test]
-    #[TestDox('Defining a property without arguments')]
-    public function definePropertyWithoutArguments(): void
+    #[TestDox('Defining the first name')]
+    public function firstName(): void
     {
         $firstName = 'Igor';
-        $lastName = 'Kozhevnikov';
-        $status = User::STATUS_ACTIVE;
-        $active = User::STATUS_ACTIVE;
-        $blocked = User::STATUS_BLOCKED;
 
+        $this->assertInstanceOf(User::class, (new User())->firstName($firstName));
         $this->assertSame($firstName, (new User())->firstName($firstName)->getFirstName());
+    }
+
+    #[Test]
+    #[TestDox('Defining the last name')]
+    public function lastName(): void
+    {
+        $lastName = 'Kozhevnikov';
+
+        $this->assertInstanceOf(User::class, (new User())->lastName($lastName));
         $this->assertSame($lastName, (new User())->lastName($lastName)->getLastName());
+    }
+
+    #[Test]
+    #[TestDox('Defining the status by an argument')]
+    public function statusViaArgument(): void
+    {
+        $status = User::STATUS_ACTIVE;
+        $message = 'Verified successfully';
+
+        $this->assertInstanceOf(User::class, (new User())->status($status, $message));
         $this->assertSame($status, (new User())->status($status)->getStatus());
-        $this->assertSame($active, (new User())->active()->getStatus());
-        $this->assertSame($blocked, (new User())->blocked()->getStatus());
+        $this->assertSame($message, (new User())->status($status, $message)->getStatusMessage());
     }
 
     #[Test]
-    #[TestDox('Defining a property with arguments')]
-    public function definePropertyWithArguments(): void
+    #[TestDox('Defining the active status')]
+    public function statusActive(): void
     {
-        $statusMessage = 'Verified successfully';
-        $blockedMessage = 'The verification period has expired';
+        $status = User::STATUS_ACTIVE;
 
-        $this->assertSame($statusMessage, (new User())->status(User::STATUS_ACTIVE, $statusMessage)->getStatusMessage());
-        $this->assertSame($blockedMessage, (new User())->blocked($blockedMessage)->getStatusMessage());
+        $this->assertInstanceOf(User::class, (new User())->active());
+        $this->assertSame($status, (new User())->active()->getStatus());
     }
 
     #[Test]
-    #[TestDox('Defining a property with selected arguments')]
-    public function definePropertyWithSelectedArguments(): void
+    #[TestDox('Defining the blocked status without an argument')]
+    public function statusBlocked(): void
     {
-        $message = 'Verified unsuccessfully';
+        $status = User::STATUS_BLOCKED;
+        $message = 'The verification period has expired';
         $code = 150;
 
-        $this->assertSame($message, (new User())->blocked($message)->getStatusMessage());
+        $this->assertInstanceOf(User::class, (new User())->blocked($message));
+        $this->assertSame($status, (new User())->blocked()->getStatus());
         $this->assertSame($message, (new User())->blocked(message: $message)->getStatusMessage());
-
-        $this->assertSame($code, (new User())->blocked($message, code: $code)->getStatusMessageCode());
         $this->assertSame($code, (new User())->blocked(code: $code)->getStatusMessageCode());
+    }
 
-        $this->assertSame($code, (new User())->blocked(message: $message, code: $code)->getStatusMessageCode());
-        $this->assertSame($message, (new User())->blocked(code: $code, message: $message)->getStatusMessage());
+    #[Test]
+    #[TestDox('Defining the language')]
+    public function language(): void
+    {
+        $language = 10;
+
+        $this->assertInstanceOf(User::class, (new User())->language($language));
+        $this->assertSame($language, (new User())->language($language)->getLanguageLevel());
+    }
+
+    #[Test]
+    #[TestDox('Defining the language by a synonym')]
+    public function level(): void
+    {
+        $level = 10;
+
+        $this->assertInstanceOf(User::class, (new User())->level($level));
+        $this->assertSame($level, (new User())->level($level)->getLanguageLevel());
+    }
+
+    #[Test]
+    #[TestDox('Defining the language as beginner')]
+    public function languageBeginner(): void
+    {
+        $this->assertInstanceOf(User::class, (new User())->beginner());
+        $this->assertSame(User::LANGUAGE_BEGINNER, (new User())->beginner()->getLanguageLevel());
+    }
+
+    #[Test]
+    #[TestDox('Defining the language as intermediate')]
+    public function languageIntermediate(): void
+    {
+        $this->assertInstanceOf(User::class, (new User())->intermediate());
+        $this->assertSame(User::LANGUAGE_INTERMEDIATE, (new User())->intermediate()->getLanguageLevel());
     }
 
     #[Test]
@@ -89,7 +131,7 @@ final class FluentTest extends TestCase
     #[TestDox('Throwing an exception when a fluent setter is missing')]
     public function missingFluentMethod(): void
     {
-        $this->expectException(MissingFluentSetterException::class);
+        $this->expectException(MissingMethodException::class);
 
         (new User())->someMissingMethod(); // @phpstan-ignore-line
     }
@@ -98,8 +140,17 @@ final class FluentTest extends TestCase
     #[TestDox('Throwing an exception when a setter is not public')]
     public function nonPublicMethod(): void
     {
-        $this->expectException(NonPublicSetterException::class);
+        $this->expectException(NonPublicMethodException::class);
 
         (new User())->age(34);
+    }
+
+    #[Test]
+    #[TestDox('Throwing an exception when a property is not public')]
+    public function nonPublicProperty(): void
+    {
+        $this->expectException(NonPublicPropertyException::class);
+
+        (new User())->cash(100.0);
     }
 }

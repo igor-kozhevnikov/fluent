@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Fluent\Examples;
 
+use Fluent\Attributes\FluentProperty;
 use Fluent\Attributes\FluentSetter;
 use Fluent\Fluent;
 
@@ -15,9 +16,11 @@ use Fluent\Fluent;
  * @method self active()
  * @method self blocked(?string $message = null, ?int $code = null)
  * @method self language(int $level)
+ * @method self level(int $level)
  * @method self beginner()
  * @method self intermediate()
  * @method self advanced()
+ * @method self cash(float $cash)
  */
 final class User
 {
@@ -37,6 +40,16 @@ final class User
      * User is blocked.
      */
     public const STATUS_BLOCKED = 2;
+
+    /**
+     * Beginner language level.
+     */
+    public const LANGUAGE_BEGINNER = 1;
+
+    /**
+     * Intermediate language level.
+     */
+    public const LANGUAGE_INTERMEDIATE = 2;
 
     /**
      * First name.
@@ -71,7 +84,17 @@ final class User
     /**
      * Language level.
      */
-    private ?int $language = null;
+    #[FluentProperty]
+    #[FluentProperty('level')]
+    #[FluentProperty('beginner', self::LANGUAGE_BEGINNER)]
+    #[FluentProperty('intermediate', self::LANGUAGE_INTERMEDIATE)]
+    public ?int $language = null;
+
+    /**
+     * Balance
+     */
+    #[FluentProperty('cash')]
+    private ?float $balance = 0.0;
 
     /**
      * Defines the first name.
