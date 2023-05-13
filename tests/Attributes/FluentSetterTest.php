@@ -15,43 +15,49 @@ use ReflectionClass;
 final class FluentSetterTest extends TestCase
 {
     #[Test]
-    #[TestDox('Defining the name')]
-    public function naming(): void
+    #[TestDox('Defining the fluent name')]
+    public function fluentName(): void
     {
         $age = 'age';
-        $setter = new FluentSetter($age);
+        $fluent = new FluentSetter($age);
 
-        $reflection = new ReflectionClass($setter);
-        $property = $reflection->getProperty('name');
+        $reflection = new ReflectionClass($fluent);
+        $property = $reflection->getProperty('fluentName');
 
-        $this->assertSame($age, $property->getValue($setter));
-        $this->assertFalse($setter->isNotEqual($age));
-        $this->assertTrue($setter->isNotEqual('bla-bla'));
+        $this->assertSame($age, $property->getValue($fluent));
+        $this->assertFalse($fluent->isNotEqual($age));
+        $this->assertTrue($fluent->isNotEqual('bla-bla'));
+    }
+
+    #[Test]
+    #[TestDox('Defining the setter name')]
+    public function setterName(): void
+    {
+        $setterName = 'setAge';
+
+        $fluent = new FluentSetter('age');
+        $fluent->setSetterName($setterName);
+
+        $this->assertSame($setterName, $fluent->getSetterName());
     }
 
     #[Test]
     #[TestDox('Check if the name is equal the given data')]
     public function equal(): void
     {
-        $setter = new FluentSetter('time');
+        $fluent = new FluentSetter('time');
 
-        $this->assertFalse($setter->isNotEqual('time'));
-        $this->assertTrue($setter->isNotEqual('bla-bla'));
+        $this->assertFalse($fluent->isNotEqual('time'));
+        $this->assertTrue($fluent->isNotEqual('bla-bla'));
     }
 
     #[Test]
     #[TestDox('Merging arguments')]
     public function arguments(): void
     {
-        $first = [true, 200, 'truth', [1, 2, 3]];
-        $second = [false, 0, 'falsy', []];
+        $arguments = [true, 200, 'truth', [1, 2, 3]];
+        $fluent = new FluentSetter('state', ...$arguments);
 
-        $setter = new FluentSetter('state', ...$first);
-
-        $reflection = new ReflectionClass($setter);
-        $arguments = $reflection->getProperty('arguments')->getValue($setter);
-
-        $this->assertSame($first, $arguments);
-        $this->assertSame([...$first, ...$second], $setter->mergeArguments($second));
+        $this->assertSame($arguments, $fluent->getArguments());
     }
 }

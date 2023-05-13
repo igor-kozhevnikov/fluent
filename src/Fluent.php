@@ -27,9 +27,24 @@ trait Fluent
             throw new ExistingMethodException($name);
         }
 
-        $reflection = new ReflectionClass($this);
+        $fluent = $this->findFluentSetter($name);
+        $setter = $fluent->getSetterName();
+        $arguments = [...$fluent->getArguments(), ...$arguments];
 
-        $setterName = null;
+        $this->$setter(...$arguments);
+
+        return $this;
+    }
+
+    /**
+     * Finds a fluent setter.
+     *
+     * @throws NonPublicSetterException
+     * @throws MissingFluentSetterException
+     */
+    protected function findFluentSetter(string $name): FluentSetter
+    {
+        $reflection = new ReflectionClass($this);
 
         foreach ($reflection->getMethods() as $method) {
             $attributes = $method->getAttributes(FluentSetter::class);
@@ -39,31 +54,26 @@ trait Fluent
             }
 
             foreach ($attributes as $attribute) {
-                /** @var FluentSetter $fluentSetter */
-                $fluentSetter = $attribute->newInstance();
+                /** @var FluentSetter $fluent */
+                $fluent = $attribute->newInstance();
 
-                if ($fluentSetter->isNotEqual($name)) {
+                if ($fluent->isNotEqual($name)) {
                     continue;
                 }
 
+                $setter = $method->getName();
+
                 if (! $method->isPublic()) {
-                    throw new NonPublicSetterException($method->getName());
+                    throw new NonPublicSetterException($setter);
                 }
 
-                $setterName = $method->getName();
-                $arguments = $fluentSetter->mergeArguments($arguments);
+                $fluent->setSetterName($setter);
 
-                break 2;
+                return $fluent;
             }
         }
 
-        if (is_null($setterName)) {
-            throw new MissingFluentSetterException($name);
-        }
-
-        $this->$setterName(...$arguments);
-
-        return $this;
+        throw new MissingFluentSetterException($name);
     }
 
     /**

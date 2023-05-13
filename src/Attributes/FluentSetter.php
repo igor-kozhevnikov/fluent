@@ -10,9 +10,14 @@ use Attribute;
 class FluentSetter
 {
     /**
+     * Fluent name.
+     */
+    private string $fluentName;
+
+    /**
      * Setter name.
      */
-    private string $name;
+    private string $setterName;
 
     /**
      * Arguments.
@@ -28,8 +33,24 @@ class FluentSetter
      */
     public function __construct(string $name, mixed ...$arguments)
     {
-        $this->name = $name;
+        $this->fluentName = $name;
         $this->arguments = $arguments;
+    }
+
+    /**
+     * Defines a setter name.
+     */
+    public function setSetterName(string $name): void
+    {
+        $this->setterName = $name;
+    }
+
+    /**
+     * Returns a setter name.
+     */
+    public function getSetterName(): string
+    {
+        return $this->setterName;
     }
 
     /**
@@ -37,18 +58,16 @@ class FluentSetter
      */
     public function isNotEqual(string $name): bool
     {
-        return $this->name !== $name;
+        return $this->fluentName !== $name;
     }
 
     /**
-     * Merges and returns arguments.
-     *
-     * @param array<string, mixed> $arguments
+     * Returns arguments.
      *
      * @return array<string, mixed>
      */
-    public function mergeArguments(array $arguments): array
+    public function getArguments(): array
     {
-        return [...$this->arguments, ...$arguments];
+        return $this->arguments;
     }
 }
