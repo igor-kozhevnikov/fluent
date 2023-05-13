@@ -38,6 +38,14 @@ class FluentSetter
     }
 
     /**
+     * Returns a fluent name.
+     */
+    public function getFluentName(): string
+    {
+        return $this->fluentName;
+    }
+
+    /**
      * Defines a setter name.
      */
     public function setSetterName(string $name): void

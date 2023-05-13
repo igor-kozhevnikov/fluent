@@ -9,7 +9,6 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
-use ReflectionClass;
 
 #[CoversClass(FluentSetter::class)]
 final class FluentSetterTest extends TestCase
@@ -21,10 +20,7 @@ final class FluentSetterTest extends TestCase
         $age = 'age';
         $fluent = new FluentSetter($age);
 
-        $reflection = new ReflectionClass($fluent);
-        $property = $reflection->getProperty('fluentName');
-
-        $this->assertSame($age, $property->getValue($fluent));
+        $this->assertSame($age, $fluent->getFluentName());
         $this->assertFalse($fluent->isNotEqual($age));
         $this->assertTrue($fluent->isNotEqual('bla-bla'));
     }

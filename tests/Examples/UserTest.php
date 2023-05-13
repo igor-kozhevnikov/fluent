@@ -48,12 +48,11 @@ final class UserTest extends TestCase
 
         $reflection = new ReflectionClass($user);
 
-        $setter = $reflection->getMethod('setAge');
-        $setter->invoke($user, $value);
+        /** @see User::setAge() */
+        $method = $reflection->getMethod('setAge');
+        $method->invoke($user, $value);
 
-        $property = $reflection->getProperty('age');
-
-        $this->assertSame($value, $property->getValue($user));
+        $this->assertSame($value, $user->getAge());
     }
 
     #[Test]
@@ -93,17 +92,17 @@ final class UserTest extends TestCase
 
         $reflection = new ReflectionClass($user);
 
+        /** @see User::setAge() */
         $setAge = $reflection->getMethod('setAge');
         $setAge->invoke($user, 34);
 
-        $age = $reflection->getProperty('age');
-
+        /** @see User::reset() */
         $reset = $reflection->getMethod('reset');
         $reset->invoke($user);
 
         $this->assertNull($user->getFirstName());
         $this->assertNull($user->getLastName());
-        $this->assertNull($age->getValue($user));
+        $this->assertNull($user->getAge());
         $this->assertSame(User::STATUS_INACTIVE, $user->getStatus());
         $this->assertNull($user->getStatusMessage());
         $this->assertNull($user->getStatusMessageCode());
