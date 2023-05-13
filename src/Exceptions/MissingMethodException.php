@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Cross\Fluent\Exceptions;
+namespace Fluent\Exceptions;
 
 use Exception;
 

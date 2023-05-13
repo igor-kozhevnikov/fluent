@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Tests\Fluent;
+namespace Tests;
 
 use Closure;
-use Cross\Fluent\Fluent;
+use Fluent\Fluent;
 
 /**
  * @method self name(?string $firstName, ?string $lastName)

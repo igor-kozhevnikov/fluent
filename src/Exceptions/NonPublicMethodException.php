@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Cross\Fluent\Exceptions;
+namespace Fluent\Exceptions;
 
 use Exception;
 
-class ProtectedMethodException extends Exception
+class NonPublicMethodException extends Exception
 {
     /**
      * Constructor.
      */
     public function __construct(string $method)
     {
-        parent::__construct("Method $method() is protected");
+        parent::__construct("Method $method() must be public");
     }
 }
