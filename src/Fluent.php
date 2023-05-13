@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Fluent;
 
 use Fluent\Attributes\FluentSetter;
+use Fluent\Exceptions\ExistingMethodException;
 use Fluent\Exceptions\MissingFluentSetterException;
 use Fluent\Exceptions\NonPublicSetterException;
 use ReflectionClass;
@@ -16,11 +17,16 @@ trait Fluent
      *
      * @param array<array-key, mixed> $arguments
      *
+     * @throws ExistingMethodException
      * @throws MissingFluentSetterException
      * @throws NonPublicSetterException
      */
     protected function callFluentSetter(string $name, array $arguments): self
     {
+        if (method_exists($this, $name)) {
+            throw new ExistingMethodException($name);
+        }
+
         $reflection = new ReflectionClass($this);
 
         $setterName = null;
@@ -64,6 +70,7 @@ trait Fluent
      *
      * @param array<array-key, mixed> $arguments
      *
+     * @throws ExistingMethodException
      * @throws MissingFluentSetterException
      * @throws NonPublicSetterException
      */

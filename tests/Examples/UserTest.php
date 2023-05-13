@@ -55,4 +55,27 @@ final class UserTest extends TestCase
 
         $this->assertSame($value, $property->getValue($user));
     }
+
+    #[Test]
+    #[TestDox('Resetting all data')]
+    public function reset(): void
+    {
+        $user = new User();
+        $user->setFirstName('Igor');
+        $user->setLastName('Kozhevnikov');
+
+        $reflection = new ReflectionClass($user);
+
+        $setAge = $reflection->getMethod('setAge');
+        $setAge->invoke($user, 34);
+
+        $age = $reflection->getProperty('age');
+
+        $reset = $reflection->getMethod('reset');
+        $reset->invoke($user);
+
+        $this->assertNull($user->getFirstName());
+        $this->assertNull($user->getLastName());
+        $this->assertNull($age->getValue($user));
+    }
 }

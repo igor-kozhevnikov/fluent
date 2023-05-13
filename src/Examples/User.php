@@ -73,4 +73,14 @@ class User
     {
         $this->age = $age;
     }
+
+    /**
+     * Reset data.
+     */
+    protected function reset(): void
+    {
+        $this->firstName = null;
+        $this->lastName = null;
+        $this->age = null;
+    }
 }

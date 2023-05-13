@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests;
 
 use Fluent\Examples\User;
+use Fluent\Exceptions\ExistingMethodException;
 use Fluent\Exceptions\MissingFluentSetterException;
 use Fluent\Exceptions\NonPublicSetterException;
 use Fluent\Fluent;
@@ -14,6 +15,7 @@ use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
 
 #[CoversClass(Fluent::class)]
+#[CoversClass(ExistingMethodException::class)]
 #[CoversClass(MissingFluentSetterException::class)]
 #[CoversClass(NonPublicSetterException::class)]
 final class FluentTest extends TestCase
@@ -35,6 +37,15 @@ final class FluentTest extends TestCase
 
         $this->assertSame($firstName, (new User())->firstName($firstName)->getFirstName());
         $this->assertSame($lastName, (new User())->lastName($lastName)->getLastName());
+    }
+
+    #[Test]
+    #[TestDox('Throwing an exception when a fluent setter being called already exists')]
+    public function existingMethod(): void
+    {
+        $this->expectException(ExistingMethodException::class);
+
+        (new User())->reset(); // @phpstan-ignore-line
     }
 
     #[Test]
