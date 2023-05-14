@@ -6,6 +6,7 @@ namespace Fluent\Handlers;
 
 use Fluent\Attributes\FluentProperty;
 use Fluent\Exceptions\NonPublicPropertyException;
+use ReflectionProperty;
 
 class PropertyHandler extends BaseHandler
 {
@@ -26,25 +27,34 @@ class PropertyHandler extends BaseHandler
             }
 
             foreach ($attributes as $attribute) {
-                /** @var FluentProperty $fluent */
-                $fluent = $attribute->newInstance();
-
-                if ($this->getMethod() !== $fluent->getName() && $this->getMethod() !== $property->getName()) {
-                    continue;
+                if ($this->handleAttribute($property, $attribute->newInstance())) {
+                    return true;
                 }
-
-                if (! $property->isPublic()) {
-                    throw new NonPublicPropertyException($property->getName());
-                }
-
-                $value = $fluent->getValue() ?? $this->getArguments()[0] ?? null;
-
-                $property->setValue($this->getClass(), $value);
-
-                return true;
             }
         }
 
         return false;
+    }
+
+    /**
+     * Handles an attribute.
+     *
+     * @throws NonPublicPropertyException
+     */
+    protected function handleAttribute(ReflectionProperty $property, FluentProperty $attribute): bool
+    {
+        if ($this->getMethod() !== $attribute->getName() && $this->getMethod() !== $property->getName()) {
+            return false;
+        }
+
+        if (! $property->isPublic()) {
+            throw new NonPublicPropertyException($property->getName());
+        }
+
+        $value = $attribute->getValue() ?? $this->getArguments()[0] ?? null;
+
+        $property->setValue($this->getClass(), $value);
+
+        return true;
     }
 }
