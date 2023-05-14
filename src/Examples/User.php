@@ -20,7 +20,6 @@ use Fluent\Fluent;
  * @method self beginner()
  * @method self intermediate()
  * @method self advanced()
- * @method self cash(float $cash)
  */
 class User
 {
@@ -89,12 +88,6 @@ class User
     #[FluentProperty('beginner', self::LANGUAGE_BEGINNER)]
     #[FluentProperty('intermediate', self::LANGUAGE_INTERMEDIATE)]
     public ?int $language = null;
-
-    /**
-     * Balance
-     */
-    #[FluentProperty('cash')]
-    private ?float $balance = 0.0; // @phpstan-ignore-line
 
     /**
      * Defines the first name.

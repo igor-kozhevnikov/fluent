@@ -7,7 +7,6 @@ namespace Fluent;
 use Fluent\Exceptions\ExistingMethodException;
 use Fluent\Exceptions\MissingMethodException;
 use Fluent\Exceptions\NonPublicMethodException;
-use Fluent\Exceptions\NonPublicPropertyException;
 use Fluent\Handlers\HandlerInterface;
 use Fluent\Handlers\PropertyHandler;
 use Fluent\Handlers\SetterExtensionHandler;
@@ -23,7 +22,6 @@ trait Fluent
      * @throws ExistingMethodException
      * @throws MissingMethodException
      * @throws NonPublicMethodException
-     * @throws NonPublicPropertyException
      */
     protected function fluent(string $name, array $arguments): self
     {
@@ -57,7 +55,6 @@ trait Fluent
      * @throws ExistingMethodException
      * @throws MissingMethodException
      * @throws NonPublicMethodException
-     * @throws NonPublicPropertyException
      */
     public function __call(string $name, array $arguments): self
     {

@@ -7,7 +7,6 @@ namespace Tests;
 use Fluent\Exceptions\ExistingMethodException;
 use Fluent\Exceptions\MissingMethodException;
 use Fluent\Exceptions\NonPublicMethodException;
-use Fluent\Exceptions\NonPublicPropertyException;
 use Fluent\Fluent;
 use Fluent\Handlers\PropertyHandler;
 use Fluent\Handlers\SetterExtensionHandler;
@@ -26,7 +25,6 @@ use PHPUnit\Framework\TestCase;
 #[CoversClass(ExistingMethodException::class)]
 #[CoversClass(MissingMethodException::class)]
 #[CoversClass(NonPublicMethodException::class)]
-#[CoversClass(NonPublicPropertyException::class)]
 final class FluentTest extends TestCase
 {
     #[Test]
@@ -181,14 +179,5 @@ final class FluentTest extends TestCase
         $this->expectException(NonPublicMethodException::class);
 
         (new Client())->hundred();
-    }
-
-    #[Test]
-    #[TestDox('Throwing an exception when a property is not public')]
-    public function nonPublicProperty(): void
-    {
-        $this->expectException(NonPublicPropertyException::class);
-
-        (new User())->cash(100.0);
     }
 }
