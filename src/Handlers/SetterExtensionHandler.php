@@ -6,7 +6,9 @@ namespace Fluent\Handlers;
 
 use Fluent\Attributes\FluentSetterExtension;
 use Fluent\Exceptions\NonPublicMethodException;
+use ReflectionAttribute;
 use ReflectionClass;
+use ReflectionException;
 
 class SetterExtensionHandler extends BaseHandler
 {
@@ -14,39 +16,64 @@ class SetterExtensionHandler extends BaseHandler
      * @inheritDoc
      *
      * @throws NonPublicMethodException
+     * @throws ReflectionException
      */
     public function handle(): bool
     {
-        $reflection = new ReflectionClass($this->context);
-        $attributes = $reflection->getAttributes(FluentSetterExtension::class);
-
-        if (empty($attributes) && $parent = $reflection->getParentClass()) {
-            $attributes = $parent->getAttributes(FluentSetterExtension::class);
-        }
+        $class = $this->getReflectionClass();
+        $attributes = $this->fetchAttributes($this->getReflectionClass());
 
         if (empty($attributes)) {
             return false;
         }
 
         foreach ($attributes as $attribute) {
-            /** @var FluentSetterExtension $fluent */
-            $fluent = $attribute->newInstance();
-
-            if ($this->name !== $fluent->getName()) {
-                continue;
+            if ($this->handleAttribute($class, $attribute->newInstance())) {
+                return true;
             }
-
-            $method = $reflection->getMethod($fluent->getSetterName());
-
-            if (! $method->isPublic()) {
-                throw new NonPublicMethodException($method->getName());
-            }
-
-            $method->invoke($this->context, ...$fluent->getArguments(), ...$this->arguments);
-
-            return true;
         }
 
         return false;
+    }
+
+    /**
+     * Fetches and returns all attributes.
+     *
+     * @return ReflectionAttribute[]
+     */
+    protected function fetchAttributes(ReflectionClass $class): array
+    {
+        $attributes = $class->getAttributes(FluentSetterExtension::class);
+
+        if ($parent = $class->getParentClass()) {
+            $attributes = [...$attributes, ...$this->fetchAttributes($parent)];
+        }
+
+        return $attributes;
+    }
+
+    /**
+     * Handles an attribute.
+     *
+     * @throws ReflectionException
+     * @throws NonPublicMethodException
+     */
+    protected function handleAttribute(ReflectionClass $class, FluentSetterExtension $attribute): bool
+    {
+        if ($this->getMethod() !== $attribute->getAlias()) {
+            return false;
+        }
+
+        $method = $class->getMethod($attribute->getName());
+
+        if (! $method->isPublic()) {
+            throw new NonPublicMethodException($method->getName());
+        }
+
+        $attributes = [...$attribute->getArguments(), ...$this->getArguments()];
+
+        $method->invoke($this->getClass(), ...$attributes);
+
+        return true;
     }
 }

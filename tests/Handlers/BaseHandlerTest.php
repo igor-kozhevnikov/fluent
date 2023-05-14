@@ -28,8 +28,8 @@ final class BaseHandlerTest extends TestCase
 
         $reflection = new ReflectionClass($handler);
 
-        $this->assertSame($context, $reflection->getProperty('context')->getValue($handler));
-        $this->assertSame($name, $reflection->getProperty('name')->getValue($handler));
+        $this->assertSame($context, $reflection->getProperty('class')->getValue($handler));
+        $this->assertSame($name, $reflection->getProperty('method')->getValue($handler));
         $this->assertSame($arguments, $reflection->getProperty('arguments')->getValue($handler));
     }
 }

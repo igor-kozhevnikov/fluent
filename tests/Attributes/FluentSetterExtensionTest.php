@@ -20,6 +20,6 @@ final class FluentSetterExtensionTest extends TestCase
         $setter = 'setAge';
         $fluent = new FluentSetterExtension($setter, 'hundred', 100);
 
-        $this->assertSame($setter, $fluent->getSetterName());
+        $this->assertSame($setter, $fluent->getName());
     }
 }

@@ -4,17 +4,19 @@ declare(strict_types=1);
 
 namespace Fluent\Handlers;
 
+use ReflectionClass;
+
 abstract class BaseHandler implements HandlerInterface
 {
     /**
-     * Context.
+     * Class.
      */
-    protected object $context;
+    protected object $class;
 
     /**
      * Called method name.
      */
-    protected string $name;
+    protected string $method;
 
     /**
      * Arguments.
@@ -28,10 +30,10 @@ abstract class BaseHandler implements HandlerInterface
      *
      * @param array<array-key, mixed> $arguments
      */
-    public function __construct(object $context, string $name, array $arguments)
+    public function __construct(object $class, string $method, array $arguments)
     {
-        $this->context = $context;
-        $this->name = $name;
+        $this->class = $class;
+        $this->method = $method;
         $this->arguments = $arguments;
     }
 
@@ -41,4 +43,36 @@ abstract class BaseHandler implements HandlerInterface
      * Returns true if process finished successfully.
      */
     abstract public function handle(): bool;
+
+    /**
+     * Return a class.
+     */
+    public function getClass(): object
+    {
+        return $this->class;
+    }
+
+    /**
+     * Return reflection of a class.
+     */
+    public function getReflectionClass(): ReflectionClass
+    {
+        return new ReflectionClass($this->class);
+    }
+
+    /**
+     * Return a method name.
+     */
+    public function getMethod(): string
+    {
+        return $this->method;
+    }
+
+    /**
+     * Return arguments.
+     */
+    public function getArguments(): array
+    {
+        return $this->arguments;
+    }
 }

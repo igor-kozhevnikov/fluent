@@ -11,7 +11,7 @@ interface HandlerInterface
      *
      * @param array<array-key, mixed> $arguments
      */
-    public function __construct(object $context, string $name, array $arguments);
+    public function __construct(object $class, string $method, array $arguments);
 
     /**
      * Handle.

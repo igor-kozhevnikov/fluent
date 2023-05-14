@@ -17,7 +17,7 @@ class PropertyHandler extends BaseHandler
      */
     public function handle(): bool
     {
-        $reflection = new ReflectionClass($this->context);
+        $reflection = new ReflectionClass($this->class);
 
         foreach ($reflection->getProperties() as $property) {
             $attributes = $property->getAttributes(FluentProperty::class);
@@ -30,7 +30,7 @@ class PropertyHandler extends BaseHandler
                 /** @var FluentProperty $fluent */
                 $fluent = $attribute->newInstance();
 
-                if ($this->name !== $fluent->getName() && $this->name !== $property->getName()) {
+                if ($this->method !== $fluent->getName() && $this->method !== $property->getName()) {
                     continue;
                 }
 
@@ -40,7 +40,7 @@ class PropertyHandler extends BaseHandler
 
                 $value = $fluent->getValue() ?? $this->arguments[0] ?? null;
 
-                $property->setValue($this->context, $value);
+                $property->setValue($this->class, $value);
 
                 return true;
             }

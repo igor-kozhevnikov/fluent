@@ -20,19 +20,7 @@ final class FluentSetterTest extends TestCase
         $age = 'age';
         $fluent = new FluentSetter($age);
 
-        $this->assertSame($age, $fluent->getName());
-        $this->assertFalse($fluent->isNotEqual($age));
-        $this->assertTrue($fluent->isNotEqual('bla-bla'));
-    }
-
-    #[Test]
-    #[TestDox('Check if the name is equal the given data')]
-    public function equal(): void
-    {
-        $fluent = new FluentSetter('time');
-
-        $this->assertFalse($fluent->isNotEqual('time'));
-        $this->assertTrue($fluent->isNotEqual('bla-bla'));
+        $this->assertSame($age, $fluent->getAlias());
     }
 
     #[Test]

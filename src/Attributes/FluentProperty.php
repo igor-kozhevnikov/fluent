@@ -10,7 +10,7 @@ use Attribute;
 class FluentProperty
 {
     /**
-     * Name.
+     * Method name.
      */
     private ?string $name;
 

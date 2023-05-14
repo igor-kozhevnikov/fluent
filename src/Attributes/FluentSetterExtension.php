@@ -10,24 +10,24 @@ use Attribute;
 class FluentSetterExtension extends FluentSetter
 {
     /**
-     * Setter.
+     * Setter name.
      */
-    private string $setter;
+    private string $name;
 
     /**
      * Constructor.
      */
-    public function __construct(string $setter, string $name, mixed ...$arguments)
+    public function __construct(string $name, string $alias, mixed ...$arguments)
     {
-        parent::__construct($name, ...$arguments);
-        $this->setter = $setter;
+        parent::__construct($alias, ...$arguments);
+        $this->name = $name;
     }
 
     /**
-     * Returns a setter name.
+     * Returns a name.
      */
-    public function getSetterName(): string
+    public function getName(): string
     {
-        return $this->setter;
+        return $this->name;
     }
 }

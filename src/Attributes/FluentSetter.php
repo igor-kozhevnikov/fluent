@@ -10,40 +10,32 @@ use Attribute;
 class FluentSetter
 {
     /**
-     * Name.
+     * Setter alias.
      */
-    private string $name;
+    protected string $alias;
 
     /**
      * Arguments.
      *
      * @var array<array-key, mixed>
      */
-    private array $arguments;
+    protected array $arguments;
 
     /**
      * Constructor.
      */
-    public function __construct(string $name, mixed ...$arguments)
+    public function __construct(string $alias, mixed ...$arguments)
     {
-        $this->name = $name;
+        $this->alias = $alias;
         $this->arguments = $arguments;
     }
 
     /**
-     * Returns a name.
+     * Returns a setter alias.
      */
-    public function getName(): string
+    public function getAlias(): string
     {
-        return $this->name;
-    }
-
-    /**
-     * Returns true if the fluent name is not equal a setter name.
-     */
-    public function isNotEqual(string $name): bool
-    {
-        return $this->name !== $name;
+        return $this->alias;
     }
 
     /**

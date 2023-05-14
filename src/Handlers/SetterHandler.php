@@ -17,7 +17,7 @@ class SetterHandler extends BaseHandler
      */
     public function handle(): bool
     {
-        $reflection = new ReflectionClass($this->context);
+        $reflection = new ReflectionClass($this->class);
 
         foreach ($reflection->getMethods() as $method) {
             $attributes = $method->getAttributes(FluentSetter::class);
@@ -30,7 +30,7 @@ class SetterHandler extends BaseHandler
                 /** @var FluentSetter $fluent */
                 $fluent = $attribute->newInstance();
 
-                if ($fluent->isNotEqual($this->name)) {
+                if ($this->getMethod() !== $fluent->getAlias()) {
                     continue;
                 }
 
@@ -40,7 +40,7 @@ class SetterHandler extends BaseHandler
                     throw new NonPublicMethodException($setter);
                 }
 
-                $this->context->$setter(...$fluent->getArguments(), ...$this->arguments);
+                $this->class->$setter(...$fluent->getArguments(), ...$this->arguments);
 
                 return true;
             }

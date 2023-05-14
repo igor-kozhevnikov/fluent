@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Tests;
 
-use Fluent\Examples\Client;
-use Fluent\Examples\User;
 use Fluent\Exceptions\ExistingMethodException;
 use Fluent\Exceptions\MissingMethodException;
 use Fluent\Exceptions\NonPublicMethodException;
@@ -14,6 +12,8 @@ use Fluent\Fluent;
 use Fluent\Handlers\PropertyHandler;
 use Fluent\Handlers\SetterExtensionHandler;
 use Fluent\Handlers\SetterHandler;
+use Fluent\Examples\Client;
+use Fluent\Examples\User;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\TestDox;
