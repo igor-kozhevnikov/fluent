@@ -7,10 +7,10 @@ namespace Fluent;
 use Fluent\Exceptions\ExistingMethodException;
 use Fluent\Exceptions\MissingMethodException;
 use Fluent\Exceptions\NonPublicMethodException;
-use Fluent\Handlers\HandlerInterface;
 use Fluent\Handlers\PropertyHandler;
 use Fluent\Handlers\SetterExtensionHandler;
 use Fluent\Handlers\SetterHandler;
+use ReflectionException;
 
 trait Fluent
 {
@@ -22,6 +22,7 @@ trait Fluent
      * @throws ExistingMethodException
      * @throws MissingMethodException
      * @throws NonPublicMethodException
+     * @throws ReflectionException
      */
     protected function fluent(string $name, array $arguments): self
     {
@@ -29,19 +30,12 @@ trait Fluent
             throw new ExistingMethodException($name);
         }
 
-        $handlers = [
-            SetterHandler::class,
-            SetterExtensionHandler::class,
-            PropertyHandler::class,
-        ];
+        $isFind = (new SetterHandler($this, $name, $arguments))->handle();
+        $isFind = $isFind || (new SetterExtensionHandler($this, $name, $arguments))->handle();
+        $isFind = $isFind || (new PropertyHandler($this, $name, $arguments))->handle();
 
-        /** @var class-string|HandlerInterface $handler */
-        foreach ($handlers as $handler) {
-            $handler = new $handler($this, $name, $arguments);
-
-            if ($handler->handle()) {
-                return $this;
-            }
+        if ($isFind) {
+            return $this;
         }
 
         throw new MissingMethodException($name);
@@ -55,6 +49,7 @@ trait Fluent
      * @throws ExistingMethodException
      * @throws MissingMethodException
      * @throws NonPublicMethodException
+     * @throws ReflectionException
      */
     public function __call(string $name, array $arguments): self
     {
