@@ -6,7 +6,8 @@ namespace Fluent\Handlers;
 
 use Fluent\Attributes\FluentSetter;
 use Fluent\Exceptions\NonPublicMethodException;
-use ReflectionClass;
+use ReflectionException;
+use ReflectionMethod;
 
 class SetterHandler extends BaseHandler
 {
@@ -14,10 +15,11 @@ class SetterHandler extends BaseHandler
      * @inheritDoc
      *
      * @throws NonPublicMethodException
+     * @throws ReflectionException
      */
     public function handle(): bool
     {
-        $reflection = new ReflectionClass($this->class);
+        $reflection = $this->getReflectionClass();
 
         foreach ($reflection->getMethods() as $method) {
             $attributes = $method->getAttributes(FluentSetter::class);
@@ -27,25 +29,35 @@ class SetterHandler extends BaseHandler
             }
 
             foreach ($attributes as $attribute) {
-                /** @var FluentSetter $fluent */
-                $fluent = $attribute->newInstance();
-
-                if ($this->getMethod() !== $fluent->getAlias()) {
-                    continue;
+                if ($this->handleAttribute($method, $attribute->newInstance())) {
+                    return true;
                 }
-
-                $setter = $method->getName();
-
-                if (! $method->isPublic()) {
-                    throw new NonPublicMethodException($setter);
-                }
-
-                $this->class->$setter(...$fluent->getArguments(), ...$this->arguments);
-
-                return true;
             }
         }
 
         return false;
+    }
+
+    /**
+     * Handles an attribute.
+     *
+     * @throws NonPublicMethodException
+     * @throws ReflectionException
+     */
+    protected function handleAttribute(ReflectionMethod $method, FluentSetter $attribute): bool
+    {
+        if ($this->getMethod() !== $attribute->getAlias()) {
+            return false;
+        }
+
+        if (! $method->isPublic()) {
+            throw new NonPublicMethodException($method->getName());
+        }
+
+        $attributes = [...$attribute->getArguments(), ...$this->getArguments()];
+
+        $method->invoke($this->getClass(), ...$attributes);
+
+        return true;
     }
 }

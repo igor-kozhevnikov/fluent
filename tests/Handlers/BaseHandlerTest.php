@@ -9,7 +9,6 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
-use ReflectionClass;
 
 #[CoversClass(BaseHandler::class)]
 final class BaseHandlerTest extends TestCase
@@ -18,18 +17,16 @@ final class BaseHandlerTest extends TestCase
     #[TestDox('Defining all properties')]
     public function properties(): void
     {
-        $context = new class {};
-        $name = 'timeout';
+        $class = new class {};
+        $method = 'timeout';
         $arguments = ['min' => 0, 'max' => 100];
 
-        $handler = new class ($context, $name, $arguments) extends BaseHandler {
+        $handler = new class ($class, $method, $arguments) extends BaseHandler {
             public function handle(): bool { return true; }
         };
 
-        $reflection = new ReflectionClass($handler);
-
-        $this->assertSame($context, $reflection->getProperty('class')->getValue($handler));
-        $this->assertSame($name, $reflection->getProperty('method')->getValue($handler));
-        $this->assertSame($arguments, $reflection->getProperty('arguments')->getValue($handler));
+        $this->assertSame($class, $handler->getClass());
+        $this->assertSame($method, $handler->getMethod());
+        $this->assertSame($arguments, $handler->getArguments());
     }
 }

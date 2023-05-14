@@ -6,7 +6,6 @@ namespace Fluent\Handlers;
 
 use Fluent\Attributes\FluentProperty;
 use Fluent\Exceptions\NonPublicPropertyException;
-use ReflectionClass;
 
 class PropertyHandler extends BaseHandler
 {
@@ -17,7 +16,7 @@ class PropertyHandler extends BaseHandler
      */
     public function handle(): bool
     {
-        $reflection = new ReflectionClass($this->class);
+        $reflection = $this->getReflectionClass();
 
         foreach ($reflection->getProperties() as $property) {
             $attributes = $property->getAttributes(FluentProperty::class);
@@ -30,7 +29,7 @@ class PropertyHandler extends BaseHandler
                 /** @var FluentProperty $fluent */
                 $fluent = $attribute->newInstance();
 
-                if ($this->method !== $fluent->getName() && $this->method !== $property->getName()) {
+                if ($this->getMethod() !== $fluent->getName() && $this->getMethod() !== $property->getName()) {
                     continue;
                 }
 
@@ -38,9 +37,9 @@ class PropertyHandler extends BaseHandler
                     throw new NonPublicPropertyException($property->getName());
                 }
 
-                $value = $fluent->getValue() ?? $this->arguments[0] ?? null;
+                $value = $fluent->getValue() ?? $this->getArguments()[0] ?? null;
 
-                $property->setValue($this->class, $value);
+                $property->setValue($this->getClass(), $value);
 
                 return true;
             }

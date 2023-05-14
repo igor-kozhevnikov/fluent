@@ -11,19 +11,19 @@ abstract class BaseHandler implements HandlerInterface
     /**
      * Class.
      */
-    protected object $class;
+    private object $class;
 
     /**
      * Called method name.
      */
-    protected string $method;
+    private string $method;
 
     /**
      * Arguments.
      *
      * @var array<array-key, mixed>
      */
-    protected array $arguments = [];
+    private array $arguments = [];
 
     /**
      * Constructor.
