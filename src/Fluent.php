@@ -30,11 +30,15 @@ trait Fluent
             throw new ExistingMethodException($name);
         }
 
-        $isFind = (new SetterHandler($this, $name, $arguments))->handle();
-        $isFind = $isFind || (new SetterExtensionHandler($this, $name, $arguments))->handle();
-        $isFind = $isFind || (new PropertyHandler($this, $name, $arguments))->handle();
+        if ((new SetterHandler($this, $name, $arguments))->handle()) {
+            return $this;
+        }
 
-        if ($isFind) {
+        if ((new SetterExtensionHandler($this, $name, $arguments))->handle()) {
+            return $this;
+        }
+
+        if ((new PropertyHandler($this, $name, $arguments))->handle()) {
             return $this;
         }
 
